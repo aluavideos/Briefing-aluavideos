@@ -478,7 +478,8 @@
           <div class="summary-box" id="summary-text"></div>
 
           <div class="send-options">
-            <button type="button" class="btn btn-primary btn-block" id="btn-email">Enviar respostas por e-mail</button>
+            <button type="button" class="btn btn-primary btn-block" id="btn-whatsapp">Enviar respostas pelo WhatsApp</button>
+            <button type="button" class="btn btn-secondary btn-block" id="btn-email">Enviar respostas por e-mail</button>
           </div>
           <p class="copy-note" id="copy-note">ou <a href="#" id="btn-copy" style="color:var(--magenta);font-weight:600;">copiar as respostas</a> para colar onde preferir</p>
         </div>
@@ -501,7 +502,8 @@
 
 <script>
 (function(){
-  var RECEIVER_EMAIL = "luana.bohrer@outlook.com";
+  var WHATSAPP_NUMBER = "5521979550292";
+  var RECEIVER_EMAIL  = "luana.bohrer@outlook.com";
 
   var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
   var total = steps.length;
@@ -662,6 +664,40 @@
     return lines.join('\n');
   }
 
+  function buildWhatsAppText(){
+    var novTem = checkedValue('temNovidade');
+    var lines = [];
+    lines.push('⭐ *Briefing de conteúdo — @aluavideos* ⭐');
+    lines.push('');
+    lines.push('*Cliente:* ' + (val('nome') || '—'));
+    lines.push('Instagram: ' + (val('ig') ? '@'+val('ig') : '—') + '  |  TikTok: ' + (val('tiktok') ? '@'+val('tiktok') : '—'));
+    lines.push('YouTube: ' + (val('youtube') ? '@'+val('youtube') : '—') + '  |  Facebook: ' + (val('facebook') ? '@'+val('facebook') : '—'));
+    lines.push('E-mail: ' + (val('email') || '—'));
+    lines.push('');
+    lines.push('*🎯 Objetivos do mês*');
+    lines.push(val('momento') || '—');
+    lines.push('Prioridades: ' + joinList(checkedValues('objetivos')));
+    lines.push('Data/campanha importante: ' + (novTem || '—') + (novTem === 'Sim' ? (' — ' + (val('novidadeTexto') || '—')) : ''));
+    lines.push('');
+    lines.push('*👥 Público-alvo*');
+    lines.push('Gênero: ' + (checkedValue('genero') || '—'));
+    lines.push('Faixa etária: ' + joinList(checkedValues('faixa')));
+    lines.push('Região: ' + joinList(checkedValues('regiao')));
+    lines.push('Como chegam: ' + joinList(checkedValues('chegada')));
+    lines.push('');
+    lines.push('*💡 Interesses do público*');
+    lines.push('O que mais procuram: ' + (val('procuram') || '—'));
+    lines.push('Conteúdos de mais sucesso: ' + (val('sucesso') || '—'));
+    lines.push('Assunto para explorar: ' + (val('assuntoDesejado') || '—'));
+    lines.push('');
+    lines.push('*🎨 Estilo visual*');
+    lines.push(joinList(checkedValues('estilo')));
+    lines.push('');
+    lines.push('*✨ Preferências*');
+    lines.push(val('preferencias') || '—');
+    return lines.join('\n');
+  }
+
   function buildEmailText(){
     var novTem = checkedValue('temNovidade');
     var L = [];
@@ -709,6 +745,11 @@
     document.getElementById('summary-text').textContent = summaryText;
   }
 
+  document.getElementById('btn-whatsapp').addEventListener('click', function(){
+    var text = encodeURIComponent(buildWhatsAppText());
+    window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + text, '_blank');
+    showSuccess();
+  });
   document.getElementById('btn-email').addEventListener('click', function(){
     var subject = encodeURIComponent('Briefing de conteúdo — ' + (val('nome') || 'cliente') + ' — @aluavideos');
     var body = encodeURIComponent(buildEmailText());
