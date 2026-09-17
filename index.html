@@ -1,1 +1,780 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Briefing de conteúdo — @aluavideos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Tokens ===== */
+  :root{
+    --magenta:#9C1856;
+    --magenta-deep:#7A1244;
+    --cream:#F5EFDC;
+    --cream-soft:#FBF8EE;
+    --pink:#EFA8C8;
+    --pink-deep:#E58BB8;
+    --ink:#1C1A17;
+    --ink-soft:#6b625c;
+    --white:#FFFDF8;
+    --danger:#B23A3A;
+    --radius-lg:28px;
+    --radius-md:18px;
+    --radius-sm:12px;
+    --shadow: 0 20px 44px rgba(37,10,25,.38);
+    --font-display: 'Anton', sans-serif;
+    --font-body: 'Poppins', sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --magenta:#9C1856; --magenta-deep:#7A1244; --cream:#F5EFDC; --cream-soft:#FBF8EE;
+      --pink:#EFA8C8; --pink-deep:#E58BB8; --ink:#1C1A17; --ink-soft:#6b625c; --white:#FFFDF8;
+    }
+  }
+  :root[data-theme="dark"]{
+    --magenta:#9C1856; --magenta-deep:#7A1244; --cream:#F5EFDC; --cream-soft:#FBF8EE;
+    --pink:#EFA8C8; --pink-deep:#E58BB8; --ink:#1C1A17; --ink-soft:#6b625c; --white:#FFFDF8;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--magenta);
+    color:var(--ink);
+    font-family:var(--font-body);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .bg-star{position:fixed;pointer-events:none;z-index:0;opacity:.9;}
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:600px;
+    margin:0 auto;
+    padding:28px 18px 56px;
+  }
+
+  .mark{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--cream);
+    font-weight:600;
+    letter-spacing:.02em;
+    margin-bottom:18px;
+    font-size:15px;
+  }
+  .mark svg{width:16px;height:16px;flex:none;}
+
+  .card{
+    background:var(--cream);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow);
+    padding:30px 22px 26px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card .corner-star{position:absolute;pointer-events:none;}
+
+  h1.title{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:38px;
+    line-height:1.02;
+    letter-spacing:.01em;
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+  h1.title u{
+    text-decoration:none;
+    background-image:linear-gradient(var(--pink),var(--pink));
+    background-repeat:no-repeat;
+    background-size:100% 34%;
+    background-position:0 88%;
+  }
+  .intro{
+    font-size:14.5px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    max-width:46ch;
+    margin:0 0 22px;
+  }
+
+  .progress{margin-bottom:26px;}
+  .progress-track{
+    display:flex;justify-content:space-between;gap:4px;
+    margin-bottom:8px;
+  }
+  .progress-seg{
+    height:5px;flex:1;background:rgba(28,26,23,.12);border-radius:4px;overflow:hidden;
+  }
+  .progress-seg > i{
+    display:block;height:100%;width:0%;background:var(--magenta);
+    transition:width .35s ease;
+  }
+  .progress-labels{
+    display:flex;justify-content:space-between;
+    font-size:10.5px;font-weight:600;color:var(--ink-soft);
+    letter-spacing:.01em;
+  }
+  .progress-labels span{flex:1;text-align:center;}
+  .progress-labels span:first-child{text-align:left;}
+  .progress-labels span:last-child{text-align:right;}
+  .progress-labels span.active{color:var(--magenta);text-decoration:underline;text-decoration-color:var(--pink);text-decoration-thickness:3px;text-underline-offset:3px;}
+
+  .step{display:none;}
+  .step.active{display:block;animation:fadein .4s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){
+    .step.active{animation:none;}
+  }
+
+  .block{margin-bottom:28px;}
+  .block:last-child{margin-bottom:6px;}
+  .block-name{
+    font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--magenta);margin:0 0 4px;
+  }
+  .q{
+    font-size:16.5px;font-weight:600;line-height:1.35;margin:0 0 4px;color:var(--ink);
+  }
+  .q .req{color:var(--magenta-deep);}
+  .helper{
+    font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 12px;
+  }
+
+  input[type="text"], input[type="email"], textarea{
+    width:100%;
+    font-family:var(--font-body);
+    font-size:15px;
+    color:var(--ink);
+    background:var(--white);
+    border:2px solid rgba(28,26,23,.18);
+    border-radius:var(--radius-sm);
+    padding:12px 14px;
+    resize:vertical;
+    transition:border-color .15s ease;
+  }
+  textarea{min-height:88px;line-height:1.5;}
+  input[type="text"]:focus, input[type="email"]:focus, textarea:focus{
+    outline:3px solid var(--pink);outline-offset:1px;border-color:var(--magenta);
+  }
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field-label{
+    display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:5px;
+  }
+  .at-field{position:relative;}
+  .at-field .at{
+    position:absolute;left:13px;top:50%;transform:translateY(-50%);
+    font-weight:600;color:var(--ink-soft);pointer-events:none;
+  }
+  .at-field input{padding-left:26px;}
+
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media (max-width:420px){.row2{grid-template-columns:1fr;}}
+
+  .choices{display:flex;flex-direction:column;gap:9px;}
+  .choices.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  @media (max-width:420px){.choices.grid2{grid-template-columns:1fr;}}
+  .chip{position:relative;display:block;cursor:pointer;}
+  .chip input{position:absolute;opacity:0;width:0;height:0;}
+  .chip-box{
+    display:flex;align-items:center;gap:10px;
+    border:2px solid rgba(28,26,23,.22);
+    background:var(--white);
+    border-radius:var(--radius-sm);
+    padding:12px 14px;
+    font-size:14px;font-weight:500;line-height:1.35;color:var(--ink);
+    transition:background .15s ease, border-color .15s ease, color .15s ease, transform .1s ease;
+  }
+  .chip-star{flex:none;width:16px;height:16px;opacity:0;transform:scale(.5);transition:opacity .15s ease, transform .15s ease;}
+  .chip input:checked ~ .chip-box{
+    background:var(--magenta);border-color:var(--magenta);color:var(--cream-soft);
+  }
+  .chip input:checked ~ .chip-box .chip-star{opacity:1;transform:scale(1);}
+  .chip input:focus-visible ~ .chip-box{outline:3px solid var(--pink);outline-offset:1px;}
+  .chip:active .chip-box{transform:scale(.98);}
+  .chip-sub{font-size:12px;font-weight:400;opacity:.85;display:block;margin-top:2px;}
+
+  .yesno{display:flex;gap:10px;}
+  .yesno .chip{flex:1;}
+  .yesno .chip-box{justify-content:center;font-weight:600;}
+
+  .conditional{
+    margin-top:12px;padding-top:12px;border-top:1px dashed rgba(28,26,23,.2);
+    display:none;
+  }
+  .conditional.show{display:block;}
+
+  .error-msg{
+    font-size:12px;color:var(--danger);font-weight:600;margin-top:6px;display:none;
+  }
+  .error-msg.show{display:block;}
+  .field.invalid input, .field.invalid textarea{border-color:var(--danger);}
+
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:8px;gap:12px;
+  }
+  .btn{
+    font-family:var(--font-body);font-weight:700;font-size:14.5px;
+    border:none;border-radius:999px;padding:14px 26px;cursor:pointer;
+    transition:transform .1s ease, background .15s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--magenta);color:var(--cream-soft);box-shadow:0 8px 18px rgba(156,24,86,.35);}
+  .btn-primary:hover{background:var(--magenta-deep);}
+  .btn-ghost{background:transparent;color:var(--ink-soft);padding:14px 8px;}
+  .btn-ghost:hover{color:var(--ink);}
+  .btn-block{width:100%;}
+  .btn[disabled]{opacity:.45;cursor:not-allowed;}
+
+  .summary-box{
+    background:var(--white);border:2px solid rgba(28,26,23,.15);border-radius:var(--radius-md);
+    padding:16px;font-size:12.5px;line-height:1.6;color:var(--ink-soft);
+    max-height:260px;overflow-y:auto;white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;
+    margin-bottom:16px;
+  }
+  .send-options{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+  .btn-secondary{background:var(--pink);color:var(--ink);}
+  .btn-secondary:hover{background:var(--pink-deep);}
+  .copy-note{font-size:12px;color:var(--ink-soft);text-align:center;min-height:16px;}
+
+  .success{
+    display:none;text-align:center;padding:20px 4px 6px;
+  }
+  .success.show{display:block;}
+  .success .burst{width:64px;height:64px;margin:0 auto 14px;}
+  .success h2{
+    font-family:var(--font-display);font-weight:400;font-size:30px;margin:0 0 10px;color:var(--ink);
+  }
+  .success p{font-size:14px;color:var(--ink-soft);line-height:1.55;max-width:40ch;margin:0 auto;}
+
+  ::selection{background:var(--pink);color:var(--ink);}
+
+  @media (min-width:600px){
+    .card{padding:44px 44px 36px;}
+    h1.title{font-size:46px;}
+  }
+</style>
+</head>
+<body>
+
+<svg class="bg-star" style="top:8%;left:-30px;width:90px;height:90px;" viewBox="0 0 100 95" fill="var(--pink)"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>
+<svg class="bg-star" style="bottom:6%;right:-24px;width:120px;height:120px;transform:rotate(18deg);" viewBox="0 0 100 95" fill="var(--cream)" opacity="0.55"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>
+
+<div class="wrap">
+  <div class="mark">
+    <svg viewBox="0 0 100 95" fill="var(--cream)"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>
+    @aluavideos
+  </div>
+
+  <div class="card">
+    <svg class="corner-star" style="top:-14px;right:-14px;width:54px;height:54px;transform:rotate(-12deg);" viewBox="0 0 100 95" fill="var(--pink)"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>
+
+    <h1 class="title">Briefing de<br><u>conteúdo</u></h1>
+    <p class="intro">O objetivo deste documento é entender o momento do seu negócio e suas prioridades para a criação de conteúdos alinhados à sua marca.</p>
+
+    <div class="progress">
+      <div class="progress-track">
+        <div class="progress-seg"><i id="seg-0"></i></div>
+        <div class="progress-seg"><i id="seg-1"></i></div>
+        <div class="progress-seg"><i id="seg-2"></i></div>
+        <div class="progress-seg"><i id="seg-3"></i></div>
+        <div class="progress-seg"><i id="seg-4"></i></div>
+      </div>
+      <div class="progress-labels" id="progress-labels">
+        <span data-idx="0">Objetivos</span>
+        <span data-idx="1">Público</span>
+        <span data-idx="2">Conteúdo</span>
+        <span data-idx="3">Estilo</span>
+        <span data-idx="4">Final</span>
+      </div>
+    </div>
+
+    <form id="briefing-form" novalidate>
+
+      <div class="step active" data-step="0">
+
+        <div class="block">
+          <p class="block-name">Informações do cliente</p>
+          <div class="field">
+            <label class="field-label" for="nome">Nome do responsável <span class="req">*</span></label>
+            <input type="text" id="nome" name="nome" required>
+            <p class="error-msg">Preencha seu nome.</p>
+          </div>
+
+          <div class="field">
+            <p class="field-label">Canais digitais</p>
+            <div class="row2" style="margin-bottom:8px;">
+              <div class="at-field"><span class="at">@</span><input type="text" id="ig" placeholder="Instagram"></div>
+              <div class="at-field"><span class="at">@</span><input type="text" id="tiktok" placeholder="TikTok"></div>
+            </div>
+            <div class="row2">
+              <div class="at-field"><span class="at">@</span><input type="text" id="youtube" placeholder="YouTube"></div>
+              <div class="at-field"><span class="at">@</span><input type="text" id="facebook" placeholder="Facebook"></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="email">E-mail <span class="req">*</span></label>
+            <input type="email" id="email" name="email" required>
+            <p class="error-msg">Digite um e-mail válido.</p>
+          </div>
+        </div>
+
+        <div class="block">
+          <p class="block-name">Objetivos do mês</p>
+          <p class="q">Conte um pouco sobre o momento da sua empresa e qual é o principal objetivo com a produção de conteúdo neste mês. <span class="req">*</span></p>
+          <p class="helper">Conte de forma breve o que está acontecendo no seu negócio e o que você gostaria de priorizar nesse período.</p>
+          <div class="field">
+            <textarea id="momento" required></textarea>
+            <p class="error-msg">Conte um pouco sobre esse momento.</p>
+          </div>
+        </div>
+
+        <div class="block">
+          <p class="q">Quais são os principais objetivos da sua empresa neste mês? <span class="req">*</span></p>
+          <p class="helper">Marque até 2 opções que mais representam suas prioridades.</p>
+          <div class="choices" id="objetivos-group">
+            <label class="chip"><input type="checkbox" name="objetivos" value="Fortalecer o posicionamento e a autoridade da empresa.">
+              <span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Fortalecer o posicionamento e a autoridade da empresa.</span></label>
+            <label class="chip"><input type="checkbox" name="objetivos" value="Atrair novos clientes e aumentar a presença digital.">
+              <span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Atrair novos clientes e aumentar a presença digital.</span></label>
+            <label class="chip"><input type="checkbox" name="objetivos" value="Aumentar o engajamento e a conexão com o público.">
+              <span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Aumentar o engajamento e a conexão com o público.</span></label>
+            <label class="chip"><input type="checkbox" name="objetivos" value="Divulgar produtos, serviços, lançamentos e novidades.">
+              <span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Divulgar produtos, serviços, lançamentos e novidades.</span></label>
+          </div>
+          <p class="error-msg" id="objetivos-error">Escolha de 1 a 2 opções.</p>
+        </div>
+
+        <div class="block">
+          <p class="q">Existe alguma data, campanha, lançamento ou novidade importante neste mês? <span class="req">*</span></p>
+          <div class="yesno">
+            <label class="chip"><input type="radio" name="temNovidade" value="Sim"><span class="chip-box">Sim</span></label>
+            <label class="chip"><input type="radio" name="temNovidade" value="Não"><span class="chip-box">Não</span></label>
+          </div>
+          <p class="error-msg" id="novidade-error">Selecione uma opção.</p>
+          <div class="conditional" id="novidade-conditional">
+            <p class="q" style="font-size:14.5px;">Se sim, qual?</p>
+            <p class="helper">Exemplo: lançamento de coleção, promoção, evento, nova unidade ou campanha especial.</p>
+            <div class="field">
+              <input type="text" id="novidadeTexto">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="step" data-step="1">
+        <div class="block">
+          <p class="block-name">Público-alvo</p>
+          <p class="q" style="margin-bottom:14px;">Qual é o público atual da sua empresa?</p>
+
+          <p class="helper" style="margin-bottom:6px;font-weight:600;color:var(--ink);">Gênero <span class="req">*</span></p>
+          <div class="choices grid2" style="margin-bottom:18px;">
+            <label class="chip"><input type="radio" name="genero" value="Principalmente mulheres."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Principalmente mulheres</span></label>
+            <label class="chip"><input type="radio" name="genero" value="Principalmente homens."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Principalmente homens</span></label>
+            <label class="chip"><input type="radio" name="genero" value="Público misto."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Público misto</span></label>
+            <label class="chip"><input type="radio" name="genero" value="Outro."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Outro</span></label>
+          </div>
+          <p class="error-msg" id="genero-error">Selecione uma opção.</p>
+
+          <p class="helper" style="margin-bottom:6px;font-weight:600;color:var(--ink);">Faixa etária <span class="req">*</span></p>
+          <div class="choices grid2" style="margin-bottom:18px;">
+            <label class="chip"><input type="checkbox" name="faixa" value="18 a 30 anos."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>18 a 30 anos</span></label>
+            <label class="chip"><input type="checkbox" name="faixa" value="30 a 40 anos."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>30 a 40 anos</span></label>
+            <label class="chip"><input type="checkbox" name="faixa" value="40 a 50 anos."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>40 a 50 anos</span></label>
+            <label class="chip"><input type="checkbox" name="faixa" value="50 anos ou mais."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>50 anos ou mais</span></label>
+          </div>
+          <p class="error-msg" id="faixa-error">Selecione ao menos uma opção.</p>
+
+          <p class="helper" style="margin-bottom:6px;font-weight:600;color:var(--ink);">Região</p>
+          <div class="choices grid2" style="margin-bottom:18px;">
+            <label class="chip"><input type="checkbox" name="regiao" value="Zona Sul."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Zona Sul</span></label>
+            <label class="chip"><input type="checkbox" name="regiao" value="Centro."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Centro</span></label>
+            <label class="chip"><input type="checkbox" name="regiao" value="Zona Oeste."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Zona Oeste</span></label>
+            <label class="chip"><input type="checkbox" name="regiao" value="Zona Norte."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Zona Norte</span></label>
+            <label class="chip"><input type="checkbox" name="regiao" value="Baixada Fluminense."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Baixada Fluminense</span></label>
+          </div>
+
+          <p class="q">Como seus clientes costumam chegar até você? <span class="req">*</span></p>
+          <div class="choices">
+            <label class="chip"><input type="checkbox" name="chegada" value="Instagram / redes sociais."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Instagram / redes sociais</span></label>
+            <label class="chip"><input type="checkbox" name="chegada" value="Indicação."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Indicação</span></label>
+            <label class="chip"><input type="checkbox" name="chegada" value="Loja física."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Loja física</span></label>
+            <label class="chip"><input type="checkbox" name="chegada" value="Site / Google."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Site / Google</span></label>
+            <label class="chip"><input type="checkbox" name="chegada" value="WhatsApp."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>WhatsApp</span></label>
+            <label class="chip"><input type="checkbox" name="chegada" value="Outros."><span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>Outros</span></label>
+          </div>
+          <p class="error-msg" id="chegada-error">Selecione ao menos uma opção.</p>
+        </div>
+      </div>
+
+      <div class="step" data-step="2">
+        <div class="block">
+          <p class="block-name">Interesses do público</p>
+          <p class="q">O que as pessoas mais procuram quando chegam à sua loja ou negócio? <span class="req">*</span></p>
+          <p class="helper">Quais produtos, serviços ou soluções elas costumam buscar?</p>
+          <div class="field">
+            <textarea id="procuram" required></textarea>
+            <p class="error-msg">Conte o que elas costumam buscar.</p>
+          </div>
+        </div>
+
+        <div class="block">
+          <p class="q">Quais tipos de conteúdo costumam fazer mais sucesso com o seu público? <span class="req">*</span></p>
+          <p class="helper">Conte quais conteúdos ou assuntos as pessoas mais gostam, comentam, compartilham ou perguntam.</p>
+          <div class="field">
+            <textarea id="sucesso" required></textarea>
+            <p class="error-msg">Conte quais conteúdos funcionam bem.</p>
+          </div>
+        </div>
+
+        <div class="block">
+          <p class="q">Tem algum assunto que você gostaria que aparecesse mais nos seus conteúdos?</p>
+          <div class="field">
+            <textarea id="assuntoDesejado"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="3">
+        <div class="block">
+          <p class="block-name">Estilo visual</p>
+          <p class="q">Qual estilo visual você mais gosta para os conteúdos da sua marca? <span class="req">*</span></p>
+          <p class="helper">Marque as opções que mais combinam com a identidade que você deseja transmitir.</p>
+          <div class="choices">
+            <label class="chip"><input type="checkbox" name="estilo" value="Clean e minimalista — visual leve, organizado e com poucos elementos.">
+              <span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg><span>Clean e minimalista<span class="chip-sub">Visual leve, organizado e com poucos elementos.</span></span></span></label>
+            <label class="chip"><input type="checkbox" name="estilo" value="Vibrante e expressivo — cores, elementos e composições que chamam atenção.">
+              <span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg><span>Vibrante e expressivo<span class="chip-sub">Cores, elementos e composições que chamam atenção.</span></span></span></label>
+            <label class="chip"><input type="checkbox" name="estilo" value="Sofisticado e elegante — estética refinada, mais discreta e com sensação premium.">
+              <span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg><span>Sofisticado e elegante<span class="chip-sub">Estética refinada, mais discreta e com sensação premium.</span></span></span></label>
+            <label class="chip"><input type="checkbox" name="estilo" value="Autêntico e editorial — visual mais criativo, conceitual e com personalidade.">
+              <span class="chip-box"><svg class="chip-star" viewBox="0 0 100 95" fill="currentColor"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg><span>Autêntico e editorial<span class="chip-sub">Visual mais criativo, conceitual e com personalidade.</span></span></span></label>
+          </div>
+          <p class="error-msg" id="estilo-error">Selecione ao menos uma opção.</p>
+        </div>
+
+        <div class="block">
+          <p class="block-name">Preferências</p>
+          <p class="q">Tem alguma coisa que você gosta ou não quer ver nos seus vídeos?</p>
+          <p class="helper">Pode contar qualquer preferência sobre a forma de gravar, aparecer ou mostrar seu negócio.</p>
+          <div class="field">
+            <textarea id="preferencias"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="4">
+        <div id="review-panel">
+          <p class="block-name">Tudo pronto</p>
+          <p class="q" style="margin-bottom:14px;">Confira um resumo rápido e envie suas respostas para a @aluavideos.</p>
+          <div class="summary-box" id="summary-text"></div>
+
+          <div class="send-options">
+            <button type="button" class="btn btn-primary btn-block" id="btn-whatsapp">Enviar respostas pelo WhatsApp</button>
+            <button type="button" class="btn btn-secondary btn-block" id="btn-email">Enviar respostas por e-mail</button>
+          </div>
+          <p class="copy-note" id="copy-note">ou <a href="#" id="btn-copy" style="color:var(--magenta);font-weight:600;">copiar as respostas</a> para colar onde preferir</p>
+        </div>
+
+        <div class="success" id="success-panel">
+          <svg class="burst" viewBox="0 0 100 95" fill="var(--magenta)"><path d="M50 3 61 37 98 37 68 59 79 95 50 73 21 95 32 59 2 37 39 37Z"/></svg>
+          <h2>Respostas enviadas!</h2>
+          <p>Recebemos as suas respostas. A partir delas, a @aluavideos vai desenvolver a estratégia e os roteiros dos conteúdos do mês.</p>
+        </div>
+      </div>
+
+      <div class="nav" id="nav-buttons">
+        <button type="button" class="btn btn-ghost" id="btn-back">Voltar</button>
+        <button type="button" class="btn btn-primary" id="btn-next">Continuar</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  var WHATSAPP_NUMBER = "5521979550292";
+  var RECEIVER_EMAIL  = "luana.bohrer@outlook.com";
+
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+  var total = steps.length;
+  var current = 0;
+
+  var segs = [0,1,2,3,4].map(function(i){ return document.getElementById('seg-'+i); });
+  var labels = document.querySelectorAll('.progress-labels span');
+  var btnBack = document.getElementById('btn-back');
+  var btnNext = document.getElementById('btn-next');
+  var navButtons = document.getElementById('nav-buttons');
+
+  function updateProgress(){
+    segs.forEach(function(seg, i){
+      seg.style.width = i < current ? '100%' : (i === current ? '55%' : '0%');
+    });
+    labels.forEach(function(l){
+      l.classList.toggle('active', parseInt(l.dataset.idx,10) === current);
+    });
+  }
+
+  function showStep(i){
+    steps.forEach(function(s){ s.classList.remove('active'); });
+    steps[i].classList.add('active');
+    btnBack.style.visibility = i === 0 ? 'hidden' : 'visible';
+    if(i === total - 1){
+      navButtons.style.display = 'none';
+    } else {
+      navButtons.style.display = 'flex';
+      btnNext.textContent = (i === total - 2) ? 'Revisar e enviar' : 'Continuar';
+    }
+    updateProgress();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function clearErrors(stepEl){
+    stepEl.querySelectorAll('.error-msg').forEach(function(e){ e.classList.remove('show'); });
+    stepEl.querySelectorAll('.field').forEach(function(f){ f.classList.remove('invalid'); });
+  }
+
+  function showError(id){
+    var el = document.getElementById(id);
+    if(el) el.classList.add('show');
+  }
+
+  function checkedValues(name){
+    return Array.prototype.slice.call(document.querySelectorAll('input[name="'+name+'"]:checked')).map(function(i){return i.value;});
+  }
+  function checkedValue(name){
+    var v = checkedValues(name);
+    return v.length ? v[0] : '';
+  }
+
+  function validateStep(i){
+    var ok = true;
+    var stepEl = steps[i];
+    clearErrors(stepEl);
+
+    function reqText(id){
+      var el = document.getElementById(id);
+      if(!el.value.trim()){
+        el.closest('.field').classList.add('invalid');
+        var err = el.closest('.field').querySelector('.error-msg');
+        if(err) err.classList.add('show');
+        ok = false;
+      }
+    }
+
+    if(i === 0){
+      reqText('nome');
+      var emailEl = document.getElementById('email');
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim());
+      if(!emailOk){ emailEl.closest('.field').classList.add('invalid'); emailEl.closest('.field').querySelector('.error-msg').classList.add('show'); ok = false; }
+      reqText('momento');
+      var obj = checkedValues('objetivos');
+      if(obj.length < 1 || obj.length > 2){ showError('objetivos-error'); ok = false; }
+      var novidade = checkedValue('temNovidade');
+      if(!novidade){ showError('novidade-error'); ok = false; }
+    }
+    if(i === 1){
+      if(!checkedValue('genero')){ showError('genero-error'); ok = false; }
+      if(checkedValues('faixa').length < 1){ showError('faixa-error'); ok = false; }
+      if(checkedValues('chegada').length < 1){ showError('chegada-error'); ok = false; }
+    }
+    if(i === 2){
+      reqText('procuram');
+      reqText('sucesso');
+    }
+    if(i === 3){
+      if(checkedValues('estilo').length < 1){ showError('estilo-error'); ok = false; }
+    }
+    return ok;
+  }
+
+  document.querySelectorAll('input[name="objetivos"]').forEach(function(box){
+    box.addEventListener('change', function(){
+      var checked = document.querySelectorAll('input[name="objetivos"]:checked');
+      if(checked.length > 2){ box.checked = false; }
+    });
+  });
+
+  document.querySelectorAll('input[name="temNovidade"]').forEach(function(radio){
+    radio.addEventListener('change', function(){
+      var cond = document.getElementById('novidade-conditional');
+      cond.classList.toggle('show', radio.value === 'Sim' && radio.checked);
+    });
+  });
+
+  btnNext.addEventListener('click', function(){
+    if(!validateStep(current)) return;
+    if(current === total - 2){
+      buildSummary();
+    }
+    current = Math.min(current + 1, total - 1);
+    showStep(current);
+  });
+  btnBack.addEventListener('click', function(){
+    current = Math.max(current - 1, 0);
+    showStep(current);
+  });
+
+  function val(id){ return (document.getElementById(id).value || '').trim(); }
+  function joinList(arr){ return arr.length ? arr.join(', ') : '—'; }
+
+  function buildSummaryText(){
+    var lines = [];
+    lines.push('Briefing de conteúdo — @aluavideos');
+    lines.push('');
+    lines.push('CLIENTE');
+    lines.push('Nome: ' + (val('nome') || '—'));
+    lines.push('Instagram: ' + (val('ig') ? '@'+val('ig') : '—'));
+    lines.push('TikTok: ' + (val('tiktok') ? '@'+val('tiktok') : '—'));
+    lines.push('YouTube: ' + (val('youtube') ? '@'+val('youtube') : '—'));
+    lines.push('Facebook: ' + (val('facebook') ? '@'+val('facebook') : '—'));
+    lines.push('E-mail: ' + (val('email') || '—'));
+    lines.push('');
+    lines.push('OBJETIVOS DO MÊS');
+    lines.push('Momento/objetivo: ' + (val('momento') || '—'));
+    lines.push('Prioridades: ' + joinList(checkedValues('objetivos')));
+    var temNov = checkedValue('temNovidade');
+    lines.push('Data/campanha importante: ' + (temNov || '—') + (temNov === 'Sim' ? (' — ' + (val('novidadeTexto') || '—')) : ''));
+    lines.push('');
+    lines.push('PÚBLICO-ALVO');
+    lines.push('Gênero: ' + (checkedValue('genero') || '—'));
+    lines.push('Faixa etária: ' + joinList(checkedValues('faixa')));
+    lines.push('Região: ' + joinList(checkedValues('regiao')));
+    lines.push('Como chegam até você: ' + joinList(checkedValues('chegada')));
+    lines.push('');
+    lines.push('INTERESSES DO PÚBLICO');
+    lines.push('O que mais procuram: ' + (val('procuram') || '—'));
+    lines.push('Conteúdos de mais sucesso: ' + (val('sucesso') || '—'));
+    lines.push('Assunto que gostaria de explorar: ' + (val('assuntoDesejado') || '—'));
+    lines.push('');
+    lines.push('ESTILO VISUAL');
+    lines.push(joinList(checkedValues('estilo')));
+    lines.push('');
+    lines.push('PREFERÊNCIAS');
+    lines.push(val('preferencias') || '—');
+    return lines.join('\n');
+  }
+
+  function buildWhatsAppText(){
+    var novTem = checkedValue('temNovidade');
+    var lines = [];
+    lines.push('⭐ *Briefing de conteúdo — @aluavideos* ⭐');
+    lines.push('');
+    lines.push('*Cliente:* ' + (val('nome') || '—'));
+    lines.push('Instagram: ' + (val('ig') ? '@'+val('ig') : '—') + '  |  TikTok: ' + (val('tiktok') ? '@'+val('tiktok') : '—'));
+    lines.push('YouTube: ' + (val('youtube') ? '@'+val('youtube') : '—') + '  |  Facebook: ' + (val('facebook') ? '@'+val('facebook') : '—'));
+    lines.push('E-mail: ' + (val('email') || '—'));
+    lines.push('');
+    lines.push('*🎯 Objetivos do mês*');
+    lines.push(val('momento') || '—');
+    lines.push('Prioridades: ' + joinList(checkedValues('objetivos')));
+    lines.push('Data/campanha importante: ' + (novTem || '—') + (novTem === 'Sim' ? (' — ' + (val('novidadeTexto') || '—')) : ''));
+    lines.push('');
+    lines.push('*👥 Público-alvo*');
+    lines.push('Gênero: ' + (checkedValue('genero') || '—'));
+    lines.push('Faixa etária: ' + joinList(checkedValues('faixa')));
+    lines.push('Região: ' + joinList(checkedValues('regiao')));
+    lines.push('Como chegam: ' + joinList(checkedValues('chegada')));
+    lines.push('');
+    lines.push('*💡 Interesses do público*');
+    lines.push('O que mais procuram: ' + (val('procuram') || '—'));
+    lines.push('Conteúdos de mais sucesso: ' + (val('sucesso') || '—'));
+    lines.push('Assunto para explorar: ' + (val('assuntoDesejado') || '—'));
+    lines.push('');
+    lines.push('*🎨 Estilo visual*');
+    lines.push(joinList(checkedValues('estilo')));
+    lines.push('');
+    lines.push('*✨ Preferências*');
+    lines.push(val('preferencias') || '—');
+    return lines.join('\n');
+  }
+
+  function buildEmailText(){
+    var novTem = checkedValue('temNovidade');
+    var L = [];
+    L.push('BRIEFING DE CONTEÚDO — @ALUAVIDEOS');
+    L.push('————————————————————');
+    L.push('');
+    L.push('CLIENTE');
+    L.push('Nome: ' + (val('nome') || '—'));
+    L.push('Instagram: ' + (val('ig') ? '@'+val('ig') : '—'));
+    L.push('TikTok: ' + (val('tiktok') ? '@'+val('tiktok') : '—'));
+    L.push('YouTube: ' + (val('youtube') ? '@'+val('youtube') : '—'));
+    L.push('Facebook: ' + (val('facebook') ? '@'+val('facebook') : '—'));
+    L.push('E-mail: ' + (val('email') || '—'));
+    L.push('');
+    L.push('OBJETIVOS DO MÊS');
+    L.push('Momento/objetivo: ' + (val('momento') || '—'));
+    L.push('Prioridades: ' + joinList(checkedValues('objetivos')));
+    L.push('Data/campanha importante: ' + (novTem || '—') + (novTem === 'Sim' ? (' — ' + (val('novidadeTexto') || '—')) : ''));
+    L.push('');
+    L.push('PÚBLICO-ALVO');
+    L.push('Gênero: ' + (checkedValue('genero') || '—'));
+    L.push('Faixa etária: ' + joinList(checkedValues('faixa')));
+    L.push('Região: ' + joinList(checkedValues('regiao')));
+    L.push('Como chegam até você: ' + joinList(checkedValues('chegada')));
+    L.push('');
+    L.push('INTERESSES DO PÚBLICO');
+    L.push('O que mais procuram: ' + (val('procuram') || '—'));
+    L.push('Conteúdos de mais sucesso: ' + (val('sucesso') || '—'));
+    L.push('Assunto que gostaria de explorar: ' + (val('assuntoDesejado') || '—'));
+    L.push('');
+    L.push('ESTILO VISUAL');
+    L.push(joinList(checkedValues('estilo')));
+    L.push('');
+    L.push('PREFERÊNCIAS');
+    L.push(val('preferencias') || '—');
+    L.push('');
+    L.push('————————————————————');
+    L.push('Preenchido pelo briefing digital da @aluavideos.');
+    return L.join('\n');
+  }
+
+  var summaryText = '';
+  function buildSummary(){
+    summaryText = buildSummaryText();
+    document.getElementById('summary-text').textContent = summaryText;
+  }
+
+  document.getElementById('btn-whatsapp').addEventListener('click', function(){
+    var text = encodeURIComponent(buildWhatsAppText());
+    window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + text, '_blank');
+    showSuccess();
+  });
+  document.getElementById('btn-email').addEventListener('click', function(){
+    var subject = encodeURIComponent('Briefing de conteúdo — ' + (val('nome') || 'cliente') + ' — @aluavideos');
+    var body = encodeURIComponent(buildEmailText());
+    window.location.href = 'mailto:' + RECEIVER_EMAIL + '?subject=' + subject + '&body=' + body;
+    showSuccess();
+  });
+  document.getElementById('btn-copy').addEventListener('click', function(e){
+    e.preventDefault();
+    var note = document.getElementById('copy-note');
+    function done(msg){ note.textContent = msg; setTimeout(function(){ note.innerHTML = 'ou <a href="#" id="btn-copy" style="color:var(--magenta);font-weight:600;">copiar as respostas</a> para colar onde preferir'; }, 2600); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(summaryText).then(function(){ done('Respostas copiadas ✓'); }).catch(function(){ done('Não foi possível copiar automaticamente.'); });
+    } else {
+      done('Não foi possível copiar automaticamente.');
+    }
+  });
+
+  function showSuccess(){
+    document.getElementById('review-panel').style.display = 'none';
+    document.getElementById('success-panel').classList.add('show');
+  }
+
+  showStep(0);
+})();
+</script>
+</body>
+</html>
